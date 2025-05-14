@@ -12,12 +12,16 @@ import {
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdatePutUserDto } from './dtos/update-put-user.dto';
 import { UpdatePatchUserDto } from './dtos/update-patch-user.dto';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
+  constructor(
+    private readonly userService: UserService,
+  ) {}
   @Post()
   async create(@Body() { name, password, email }: CreateUserDto) {
-    return { name, password, email };
+    return this.userService.create({ name, password, email });
   }
 
   @Get()

@@ -2,7 +2,7 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -20,46 +20,32 @@ export class UserController {
     private readonly userService: UserService,
   ) {}
   @Post()
-  async create(@Body() { name, password, email }: CreateUserDto) {
-    return this.userService.create({ name, password, email });
+  async create(@Body() { name, password, email, birthAt }: CreateUserDto) {
+    return this.userService.create({ name, password, email, birthAt });
   }
 
   @Get()
-  async findAll() {
-    return { users: [] };
+  async list() {
+    return this.userService.list();
   }
 
   @Get(':id')
-  async readOne(@Param('id', ParseIntPipe) id: number) {
-    return { user: {}, id };
+  async show(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.show(id);
   }
 
   @Put(':id')
-  async update(@Body() { name, password, email }: UpdatePutUserDto, @Param('id', ParseIntPipe) id: number) {
-    return {
-      method: 'PUT',
-      name,
-      password,
-      email,
-      id,
-    };
+  async update(@Body() data: UpdatePutUserDto, @Param('id', ParseIntPipe) id: number) {
+    return this.userService.update(id, data);
   }
 
   @Patch(':id')
-  async updatePartial(@Body() { name, email, password }: UpdatePatchUserDto, @Param('id', ParseIntPipe) id: number) {
-    return {
-      method: 'Patch',
-      name,
-      email,
-      password,
-      id,
-    };
+  async updatePartial(@Body() data: UpdatePatchUserDto, @Param('id', ParseIntPipe) id: number) {
+    return this.userService.updatePartial(id, data);
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    return {
-      id
-    };
+    return this.userService.delete(id);
   }
 }
